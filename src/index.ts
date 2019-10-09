@@ -1,6 +1,6 @@
 import express from "express";
 import { Database } from "sqlite3";
-import initTables from "./db/databaseinit";
+import { initTables } from "./db/databaseinit";
 import { User } from "./routes";
 import bodyParser from "body-parser";
 
