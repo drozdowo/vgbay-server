@@ -10,7 +10,12 @@ let initTables = async (db: Database): Promise<void> => {
   database = db;
   console.log("creating user table...");
   await db.run(
-    "CREATE TABLE users(uid integer increment, username text, password text)"
+    "CREATE TABLE users(uid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL)",
+    err => {
+      if (err != null) {
+        console.log(err);
+      }
+    }
   );
 };
 

@@ -6,11 +6,15 @@ import express, { Request, Response, NextFunction } from "express";
 import { createUser } from "../db/user/user";
 let route = express.Router();
 
-route.post("/signup", (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.username || !req.body.password) {
-    res.status(400).send({ message: "Invalid body" });
+route.post(
+  "/signup",
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.username || !req.body.password) {
+      res.status(400).send({ message: "Invalid body" });
+    }
+    let query = await createUser(req.body.username, req.body.password);
+    res.status(query.status).send(query.message);
   }
-  createUser(req.body.username, req.body.password);
-});
+);
 
 export default route;

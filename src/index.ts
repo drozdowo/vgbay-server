@@ -13,7 +13,7 @@ let db: Database;
 app.use("/user", User); //Forward all things that access /user/<anything> to our User route
 
 app.listen(3000, async () => {
-  db = new sqlite3.Database(":memory:", (err: Error | null) => {
+  db = new sqlite3.Database("../vgbayserver.db", (err: Error | null) => {
     if (err) {
       console.log("err");
       process.exit(1);
