@@ -1,25 +1,24 @@
 import express from "express";
 import { Database } from "sqlite3";
-import { resolve } from "dns";
-
-let sqlite3 = require("sqlite3").verbose();
+import initTables from "./db/databaseinit";
+import { User } from "./routes";
+import bodyParser from "body-parser";
 
 let app = express();
+app.use(bodyParser.json()); //use body-parser module. It formats the post data into the body of the request.
+
+let sqlite3 = require("sqlite3").verbose();
 let db: Database;
 
+app.use("/user", User); //Forward all things that access /user/<anything> to our User route
+
 app.listen(3000, async () => {
-  console.log("vgBay Server Started...");
-  console.log("Attempting to connect to database...");
-  db = new sqlite3.Database("../vgbayserver.db", (err: Error | null) => {
+  db = new sqlite3.Database(":memory:", (err: Error | null) => {
     if (err) {
       console.log("err");
       process.exit(1);
     }
   });
-  console.log("Connected to database successfully!");
-});
-
-app.get("/test", (req, res) => {
-  console.log(db);
-  res.send(db);
+  await initTables(db);
+  console.log("vgBay Server Started...");
 });
