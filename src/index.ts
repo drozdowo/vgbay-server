@@ -3,9 +3,11 @@ import { Database } from "sqlite3";
 import { initTables } from "./db/databaseinit";
 import { User } from "./routes";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 let app = express();
 app.use(bodyParser.json()); //use body-parser module. It formats the post data into the body of the request.
+app.use(cors());
 
 let sqlite3 = require("sqlite3").verbose();
 let db: Database;

@@ -13,7 +13,7 @@ let initTables = async (db: Database): Promise<void> => {
     "CREATE TABLE users(uid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL)",
     err => {
       if (err != null) {
-        console.log(err);
+        //console.log(err);
       }
     }
   );
