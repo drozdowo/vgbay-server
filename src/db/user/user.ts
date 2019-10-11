@@ -29,7 +29,7 @@ let createUser = async (
   //Check the result and see if a user already exists
   if (check) {
     return {
-      status: 500,
+      status: 200,
       message: "User with this name already exists"
     };
   }
