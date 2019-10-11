@@ -58,9 +58,9 @@ let loginUser = async (
   }).catch(err => {
     console.log(err);
   });
-  if (check === {}) {
+  if (!check) {
     return {
-      status: 401,
+      status: 200,
       message: "invalid username"
     };
   }
@@ -72,7 +72,7 @@ let loginUser = async (
   }
   return {
     status: 200,
-    message: "test"
+    message: "invalid password"
   };
 };
 
