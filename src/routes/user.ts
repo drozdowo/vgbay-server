@@ -3,8 +3,7 @@
  */
 
 import express, { Request, Response, NextFunction } from "express";
-import { createUser } from "../db/user/user";
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
+import { createUser, loginUser } from "../db/user/user";
 let route = express.Router();
 
 route.post(
@@ -21,10 +20,11 @@ route.post(
 route.post(
   "/login",
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body);
     if (!req.body.username || !req.body.password) {
       res.status(400).send({ message: "Invalid body" });
     }
-    let query = await userLogin(req.body.username, req.body.password);
+    let query = await loginUser(req.body.username, req.body.password);
     res.status(query.status).send(query.message);
   }
 );

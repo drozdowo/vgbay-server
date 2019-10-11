@@ -44,4 +44,36 @@ let createUser = async (
   };
 };
 
-export { createUser };
+let loginUser = async (
+  username: string,
+  password: string
+): Promise<ServerResp> => {
+  let db = await getDatabase();
+  console.log(username);
+  let check: any = await new Promise((resolve, reject): any => {
+    db.get("select * from users where username = ?", [username], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+  if (check === {}) {
+    return {
+      status: 401,
+      message: "invalid username"
+    };
+  }
+  if (password === check["password"]) {
+    return {
+      status: 200,
+      message: "verified"
+    };
+  }
+  return {
+    status: 200,
+    message: "test"
+  };
+};
+
+export { createUser, loginUser };
