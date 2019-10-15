@@ -6,6 +6,28 @@ let createUser = async (
   password: string,
   db: Database
 ): Promise<ServerResp> => {
+  if (!username && !password) {
+    return {
+      status: 200,
+      message: "No username or password provided.",
+      success: false
+    };
+  }
+  if (!username) {
+    return {
+      status: 200,
+      message: "No username provided",
+      success: false
+    };
+  }
+  if (!password) {
+    return {
+      status: 200,
+      message: "No password provided",
+      success: false
+    };
+  }
+
   /**
    * These below lines may be a bit confusing to people not familiar with js and its asynchronicity
    * but essentially a promise is what its name suggests. This promises to return data, but not immediately.
@@ -29,7 +51,8 @@ let createUser = async (
   if (check) {
     return {
       status: 200,
-      message: "User with this name already exists"
+      message: "User with this name already exists",
+      success: false
     };
   }
 
@@ -39,7 +62,8 @@ let createUser = async (
   console.log("created user");
   return {
     status: 200,
-    message: "Successfully created user"
+    message: "Successfully created user",
+    success: true
   };
 };
 
@@ -48,6 +72,27 @@ let loginUser = async (
   password: string,
   db: Database
 ): Promise<ServerResp> => {
+  if (!username && !password) {
+    return {
+      status: 200,
+      message: "No username or password provided.",
+      success: false
+    };
+  }
+  if (!username) {
+    return {
+      status: 200,
+      message: "No username provided",
+      success: false
+    };
+  }
+  if (!password) {
+    return {
+      status: 200,
+      message: "No password provided",
+      success: false
+    };
+  }
   let check: any = await new Promise((resolve, reject): any => {
     db.get("select * from users where username = ?", [username], (err, row) => {
       if (err) reject(err);
@@ -60,7 +105,8 @@ let loginUser = async (
   if (!check) {
     return {
       status: 200,
-      message: "invalid username"
+      message: "invalid username",
+      success: false
     };
   }
   if (password === check["password"]) {
@@ -87,12 +133,14 @@ let loginUser = async (
     return {
       status: 200,
       message: "verified",
-      token
+      token,
+      success: true
     };
   }
   return {
     status: 200,
-    message: "invalid password"
+    message: "invalid password",
+    success: false
   };
 };
 

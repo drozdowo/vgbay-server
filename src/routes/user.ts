@@ -10,9 +10,6 @@ let route = express.Router();
 route.post(
   "/signup",
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.body.username || !req.body.password) {
-      res.status(400).send({ message: "Invalid body" });
-    }
     let query = await createUser(
       req.body.username,
       req.body.password,
@@ -25,10 +22,6 @@ route.post(
 route.post(
   "/login",
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
-    if (!req.body.username || !req.body.password) {
-      res.status(400).send({ message: "Invalid body" });
-    }
     let query = await loginUser(
       req.body.username,
       req.body.password,
