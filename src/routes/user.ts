@@ -4,6 +4,7 @@
 
 import express, { Request, Response, NextFunction } from "express";
 import { createUser, loginUser } from "../db/user/user";
+import { getDatabase } from "../db/databaseinit";
 let route = express.Router();
 
 route.post(
@@ -12,7 +13,11 @@ route.post(
     if (!req.body.username || !req.body.password) {
       res.status(400).send({ message: "Invalid body" });
     }
-    let query = await createUser(req.body.username, req.body.password);
+    let query = await createUser(
+      req.body.username,
+      req.body.password,
+      await getDatabase()
+    );
     res.status(query.status).send(query.message);
   }
 );
@@ -24,7 +29,11 @@ route.post(
     if (!req.body.username || !req.body.password) {
       res.status(400).send({ message: "Invalid body" });
     }
-    let query = await loginUser(req.body.username, req.body.password);
+    let query = await loginUser(
+      req.body.username,
+      req.body.password,
+      await getDatabase()
+    );
     res.status(query.status).send(query);
   }
 );

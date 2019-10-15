@@ -1,12 +1,11 @@
 import { getDatabase } from "../databaseinit";
+import { Database } from "sqlite3";
 
 let createUser = async (
   username: string,
-  password: string
+  password: string,
+  db: Database
 ): Promise<ServerResp> => {
-  //Get an instance of the database
-  let db = await getDatabase();
-
   /**
    * These below lines may be a bit confusing to people not familiar with js and its asynchronicity
    * but essentially a promise is what its name suggests. This promises to return data, but not immediately.
@@ -26,6 +25,7 @@ let createUser = async (
     console.log(err);
   });
   //Check the result and see if a user already exists
+  console.log(check);
   if (check) {
     return {
       status: 200,
@@ -45,9 +45,9 @@ let createUser = async (
 
 let loginUser = async (
   username: string,
-  password: string
+  password: string,
+  db: Database
 ): Promise<ServerResp> => {
-  let db = await getDatabase();
   let check: any = await new Promise((resolve, reject): any => {
     db.get("select * from users where username = ?", [username], (err, row) => {
       if (err) reject(err);
@@ -56,6 +56,7 @@ let loginUser = async (
   }).catch(err => {
     console.log(err);
   });
+  console.log(check);
   if (!check) {
     return {
       status: 200,

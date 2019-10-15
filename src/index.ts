@@ -1,4 +1,6 @@
 import express from "express";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import { Database } from "sqlite3";
 import { initTables } from "./db/databaseinit";
 import { User } from "./routes";
