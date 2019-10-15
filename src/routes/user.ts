@@ -25,7 +25,7 @@ route.post(
       res.status(400).send({ message: "Invalid body" });
     }
     let query = await loginUser(req.body.username, req.body.password);
-    res.status(query.status).send(query.message);
+    res.status(query.status).send(query);
   }
 );
 

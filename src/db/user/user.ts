@@ -25,7 +25,6 @@ let createUser = async (
   }).catch(err => {
     console.log(err);
   });
-
   //Check the result and see if a user already exists
   if (check) {
     return {
@@ -34,7 +33,7 @@ let createUser = async (
     };
   }
 
-  let stmt = await db.prepare("insert into users values (NULL,?,?)");
+  let stmt = await db.prepare("insert into users values (NULL,?,?,NULL)");
   await stmt.run([username, password]);
   await stmt.finalize();
   console.log("created user");
@@ -49,7 +48,6 @@ let loginUser = async (
   password: string
 ): Promise<ServerResp> => {
   let db = await getDatabase();
-  console.log(username);
   let check: any = await new Promise((resolve, reject): any => {
     db.get("select * from users where username = ?", [username], (err, row) => {
       if (err) reject(err);
@@ -65,9 +63,30 @@ let loginUser = async (
     };
   }
   if (password === check["password"]) {
+    //create a token and save it for that user
+    let token: string =
+      Math.random()
+        .toString(36)
+        .substring(2, 15) +
+      Math.random()
+        .toString(36)
+        .substring(2, 15);
+    let tokenQuery: any = await new Promise((resolve, reject): any => {
+      db.get(
+        "update users set token = ? where username = ?",
+        [token, username],
+        (err, row) => {
+          if (err) reject(err);
+          resolve(row);
+        }
+      );
+    }).catch(err => {
+      console.log(err);
+    });
     return {
       status: 200,
-      message: "verified"
+      message: "verified",
+      token
     };
   }
   return {
