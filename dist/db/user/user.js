@@ -22,7 +22,43 @@ function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
+            if (!(!username && !password)) {
+              _context.next = 2;
+              break;
+            }
+
+            return _context.abrupt("return", {
+              status: 200,
+              message: "No username or password provided.",
+              success: false
+            });
+
+          case 2:
+            if (username) {
+              _context.next = 4;
+              break;
+            }
+
+            return _context.abrupt("return", {
+              status: 200,
+              message: "No username provided",
+              success: false
+            });
+
+          case 4:
+            if (password) {
+              _context.next = 6;
+              break;
+            }
+
+            return _context.abrupt("return", {
+              status: 200,
+              message: "No password provided",
+              success: false
+            });
+
+          case 6:
+            _context.next = 8;
             return new Promise(function (resolve, reject) {
               db.get("select * from users where username = ?", [username], function (err, row) {
                 if (err) reject(err);
@@ -32,42 +68,44 @@ function () {
               console.log(err);
             });
 
-          case 2:
+          case 8:
             check = _context.sent;
             //Check the result and see if a user already exists
             console.log(check);
 
             if (!check) {
-              _context.next = 6;
+              _context.next = 12;
               break;
             }
 
             return _context.abrupt("return", {
               status: 200,
-              message: "User with this name already exists"
+              message: "User with this name already exists",
+              success: false
             });
 
-          case 6:
-            _context.next = 8;
+          case 12:
+            _context.next = 14;
             return db.prepare("insert into users values (NULL,?,?,NULL)");
 
-          case 8:
+          case 14:
             stmt = _context.sent;
-            _context.next = 11;
+            _context.next = 17;
             return stmt.run([username, password]);
 
-          case 11:
-            _context.next = 13;
+          case 17:
+            _context.next = 19;
             return stmt.finalize();
 
-          case 13:
+          case 19:
             console.log("created user");
             return _context.abrupt("return", {
               status: 200,
-              message: "Successfully created user"
+              message: "Successfully created user",
+              success: true
             });
 
-          case 15:
+          case 21:
           case "end":
             return _context.stop();
         }
@@ -93,7 +131,43 @@ function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
+            if (!(!username && !password)) {
+              _context2.next = 2;
+              break;
+            }
+
+            return _context2.abrupt("return", {
+              status: 200,
+              message: "No username or password provided.",
+              success: false
+            });
+
+          case 2:
+            if (username) {
+              _context2.next = 4;
+              break;
+            }
+
+            return _context2.abrupt("return", {
+              status: 200,
+              message: "No username provided",
+              success: false
+            });
+
+          case 4:
+            if (password) {
+              _context2.next = 6;
+              break;
+            }
+
+            return _context2.abrupt("return", {
+              status: 200,
+              message: "No password provided",
+              success: false
+            });
+
+          case 6:
+            _context2.next = 8;
             return new Promise(function (resolve, reject) {
               db.get("select * from users where username = ?", [username], function (err, row) {
                 if (err) reject(err);
@@ -103,29 +177,30 @@ function () {
               console.log(err);
             });
 
-          case 2:
+          case 8:
             check = _context2.sent;
             console.log(check);
 
             if (check) {
-              _context2.next = 6;
+              _context2.next = 12;
               break;
             }
 
             return _context2.abrupt("return", {
               status: 200,
-              message: "invalid username"
+              message: "invalid username",
+              success: false
             });
 
-          case 6:
+          case 12:
             if (!(password === check["password"])) {
-              _context2.next = 12;
+              _context2.next = 18;
               break;
             }
 
             //create a token and save it for that user
             token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            _context2.next = 10;
+            _context2.next = 16;
             return new Promise(function (resolve, reject) {
               db.get("update users set token = ? where username = ?", [token, username], function (err, row) {
                 if (err) reject(err);
@@ -135,21 +210,23 @@ function () {
               console.log(err);
             });
 
-          case 10:
+          case 16:
             tokenQuery = _context2.sent;
             return _context2.abrupt("return", {
               status: 200,
               message: "verified",
-              token: token
+              token: token,
+              success: true
             });
 
-          case 12:
+          case 18:
             return _context2.abrupt("return", {
               status: 200,
-              message: "invalid password"
+              message: "invalid password",
+              success: false
             });
 
-          case 13:
+          case 19:
           case "end":
             return _context2.stop();
         }
