@@ -17,6 +17,15 @@ let initTables = async (db: Database): Promise<void> => {
       }
     }
   );
+
+  await db.run(
+    "CREATE TABLE ads (id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, poster	TEXT NOT NULL, category	TEXT NOT NULL, name	TEXT NOT NULL, description	TEXT NOT NULL, price	INTEGER NOT NULL, email	TEXT NOT NULL, datePosted	NUMERIC)",
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
 };
 
 export { initTables, getDatabase };
