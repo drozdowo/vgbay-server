@@ -33,28 +33,22 @@ function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (!req.body.username || !req.body.password) {
-              res.status(400).send({
-                message: "Invalid body"
-              });
-            }
-
             _context.t0 = _user.createUser;
             _context.t1 = req.body.username;
             _context.t2 = req.body.password;
-            _context.next = 6;
+            _context.next = 5;
             return (0, _databaseinit.getDatabase)();
 
-          case 6:
+          case 5:
             _context.t3 = _context.sent;
-            _context.next = 9;
+            _context.next = 8;
             return (0, _context.t0)(_context.t1, _context.t2, _context.t3);
 
-          case 9:
+          case 8:
             query = _context.sent;
             res.status(query.status).send(query.message);
 
-          case 11:
+          case 10:
           case "end":
             return _context.stop();
         }
@@ -77,30 +71,22 @@ function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            console.log(req.body);
-
-            if (!req.body.username || !req.body.password) {
-              res.status(400).send({
-                message: "Invalid body"
-              });
-            }
-
             _context2.t0 = _user.loginUser;
             _context2.t1 = req.body.username;
             _context2.t2 = req.body.password;
-            _context2.next = 7;
+            _context2.next = 5;
             return (0, _databaseinit.getDatabase)();
 
-          case 7:
+          case 5:
             _context2.t3 = _context2.sent;
-            _context2.next = 10;
+            _context2.next = 8;
             return (0, _context2.t0)(_context2.t1, _context2.t2, _context2.t3);
 
-          case 10:
+          case 8:
             query = _context2.sent;
             res.status(query.status).send(query);
 
-          case 12:
+          case 10:
           case "end":
             return _context2.stop();
         }

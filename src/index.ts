@@ -3,7 +3,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Database } from "sqlite3";
 import { initTables } from "./db/databaseinit";
-import { User } from "./routes";
+import { User, Search } from "./routes";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -15,9 +15,10 @@ let sqlite3 = require("sqlite3").verbose();
 let db: Database;
 
 app.use("/user", User); //Forward all things that access /user/<anything> to our User route
+app.use("/search", Search); //Forward all things that access /user/<anything> to our User route
 
 app.listen(3000, async () => {
-  db = new sqlite3.Database("../vgbayserver.db", (err: Error | null) => {
+  db = new sqlite3.Database("vgbayserver.db", (err: Error | null) => {
     if (err) {
       console.log("err");
       process.exit(1);
