@@ -9,7 +9,6 @@ let homepageAds = async (db: Database): Promise<ServerResp> => {
   }).catch(err => {
     console.log(err);
   });
-  console.log(ads);
   return {
     status: 200,
     message: "success",

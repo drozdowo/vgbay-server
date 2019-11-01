@@ -26,6 +26,15 @@ let initTables = async (db: Database): Promise<void> => {
       }
     }
   );
+
+  await db.run(
+    "CREATE TABLE profile (uid	INTEGER NOT NULL UNIQUE, email	TEXT, city	TEXT, postalcode	TEXT, phone	TEXT, address	TEXT, PRIMARY KEY(uid))",
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
 };
 
 export { initTables, getDatabase };

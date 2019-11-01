@@ -144,4 +144,22 @@ let loginUser = async (
   };
 };
 
+let getMyProfile = async (token: string, db: Database) => {
+  if (!token || token === "") {
+    return {
+      status: 200,
+      message: "Unauthorized. No token",
+      success: false
+    };
+  }
+  let check: any = await new Promise((resolve, reject): any => {
+    db.get("select * from users where token = ?", [token], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+};
+
 export { createUser, loginUser };
