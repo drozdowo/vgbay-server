@@ -67,6 +67,13 @@ let createUser = async (
   };
 };
 
+/** loginUser
+ *  Called when a user is logging into the
+ *
+ * @param username string
+ * @param password  string
+ * @param db database
+ */
 let loginUser = async (
   username: string,
   password: string,
@@ -144,22 +151,79 @@ let loginUser = async (
   };
 };
 
-let getMyProfile = async (token: string, db: Database) => {
-  if (!token || token === "") {
-    return {
-      status: 200,
-      message: "Unauthorized. No token",
-      success: false
-    };
-  }
+/**
+ * getMyProfile
+ * Gets the users profile information for display. No editing here.
+ * @param token string - the users token
+ * @param db database - the database object
+ */
+let getMyProfile = async (token: string, db: Database): Promise<ServerResp> => {
   let check: any = await new Promise((resolve, reject): any => {
-    db.get("select * from users where token = ?", [token], (err, row) => {
-      if (err) reject(err);
-      resolve(row);
-    });
+    db.get(
+      "select * from profile where uid = (select uid from users where token = ?)",
+      [token],
+      (err, row) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
   }).catch(err => {
     console.log(err);
   });
+  if (!check) {
+    return {
+      status: 200,
+      success: false,
+      message: "invalid user?"
+    };
+  }
+  return {
+    status: 200,
+    message: "success",
+    dataType: "profile",
+    data: check,
+    success: true
+  };
 };
 
-export { createUser, loginUser };
+/**
+ * updateMyProfile
+ * Updates the users profile based on the authorization value
+ * @param token string - the users token
+ * @param db database - the database object
+ */
+let updateMyProfile = async (info: any, db: Database): Promise<ServerResp> => {
+  let update = await new Promise((resolve, reject): any => {
+    db.get(
+      "update profile set email = ?, city = ?, postalcode = ?, phone = ?, address = ? where uid = ?",
+      [
+        info.email ? info.email : null,
+        info.city ? info.city : null,
+        info.postalcode ? info.postalcode : null,
+        info.phone ? info.phone : null,
+        info.address ? info.address : null,
+        info.auth.user.uid
+      ],
+      (err: any, row: any) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
+  }).catch(err => {
+    console.error(err);
+    return {
+      status: 200,
+      message: "error",
+      data: err,
+      dataType: "error"
+    };
+  });
+  return {
+    status: 200,
+    message: "successfully updated profile",
+    dataType: "profileupdated",
+    success: true
+  };
+};
+
+export { createUser, loginUser, getMyProfile, updateMyProfile };

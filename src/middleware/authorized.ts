@@ -35,7 +35,12 @@ export default (onlyMe: boolean) => {
       } as ServerResp);
       return;
     }
-    console.log("authorized");
+    req.body["auth"] = {};
+    if (onlyMe) {
+      req.body["auth"]["onlyme"] = true; //set the only me flag so I can only edit things that are MINE. prevents hackerman type shit
+    }
+    req.body["auth"]["token"] = token;
+    req.body["auth"]["user"] = check;
     next();
   };
 };

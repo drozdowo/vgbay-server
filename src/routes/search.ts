@@ -4,14 +4,10 @@ import { getDatabase } from "../db/databaseinit";
 import authorized from "../middleware/authorized";
 let route = express.Router();
 
-route.get(
-  "/homepageads",
-  authorized(true),
-  async (req: Request, res: Response) => {
-    let ads = await homepageAds(await getDatabase());
-    res.status(ads.status).send(ads);
-  }
-);
+route.get("/homepageads", async (req: Request, res: Response) => {
+  let ads = await homepageAds(await getDatabase());
+  res.status(ads.status).send(ads);
+});
 
 route.post("/searchterm", async (req: Request, res: Response) => {
   let ads = await searchName(await getDatabase(), req.body.term);
