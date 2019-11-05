@@ -189,7 +189,7 @@ let getMyProfile = async (token: string, db: Database): Promise<ServerResp> => {
 /**
  * updateMyProfile
  * Updates the users profile based on the authorization value
- * @param token string - the users token
+ * @param info json - the json of the user
  * @param db database - the database object
  */
 let updateMyProfile = async (info: any, db: Database): Promise<ServerResp> => {
@@ -226,4 +226,49 @@ let updateMyProfile = async (info: any, db: Database): Promise<ServerResp> => {
   };
 };
 
-export { createUser, loginUser, getMyProfile, updateMyProfile };
+/**
+ *  createAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param ad  - the ad object. contains the title, description, etc
+ * @param db  - database object
+ */
+let createAd = async (
+  auth: any,
+  ad: any,
+  db: Database
+): Promise<ServerResp> => {
+  let update = await new Promise((resolve, reject): any => {
+    db.get(
+      "insert into ads values(null, ?, ?, ?, ?, ?, ?, ?, null)",
+      [
+        auth.user.username,
+        ad.category,
+        ad.name,
+        ad.description,
+        ad.price,
+        auth.user.email,
+        new Date().getDate()
+      ],
+      (err: any, row: any) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
+  }).catch(err => {
+    console.error(err);
+    return {
+      status: 200,
+      message: "error",
+      data: err,
+      dataType: "error"
+    };
+  });
+  console.log(update);
+  return {
+    status: 200,
+    message: "successfully created ad",
+    success: true
+  };
+};
+
+export { createUser, loginUser, getMyProfile, updateMyProfile, createAd };

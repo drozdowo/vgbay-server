@@ -25,6 +25,9 @@ route.post(
   }
 );
 
+/** login route
+ *
+ */
 route.post(
   "/login",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -37,6 +40,9 @@ route.post(
   }
 );
 
+/**
+ *  get my profile route
+ */
 route.get(
   "/getmyprofile",
   authorized(true), //this bit will make this so only authorized people can access this
@@ -54,6 +60,22 @@ route.post(
     let info: any = req.body;
     let result = await updateMyProfile(info, await getDatabase());
     res.status(result.status).send(result);
+  }
+);
+
+/**
+ *  the create ad route. this is what will be called when we want to create a route
+ */
+route.post(
+  "/createad",
+  authorized(true), //this bit will make this so only authorized people can access this
+  async (req: Request, res: Response) => {
+    let ad: any = {};
+    ad["category"] = req.body.category;
+    ad["name"] = req.body.name;
+    ad["description"] = req.body.description;
+    ad["price"] = req.body.price;
+    res.send(ad);
   }
 );
 
