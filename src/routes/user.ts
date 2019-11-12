@@ -7,7 +7,9 @@ import {
   createUser,
   loginUser,
   getMyProfile,
-  updateMyProfile
+  updateMyProfile,
+  createAd,
+  myAds
 } from "../db/user/user";
 import { getDatabase } from "../db/databaseinit";
 import authorized from "../middleware/authorized";
@@ -75,7 +77,21 @@ route.post(
     ad["name"] = req.body.name;
     ad["description"] = req.body.description;
     ad["price"] = req.body.price;
-    res.send(ad);
+    let result = await createAd(req.body.auth, ad, await getDatabase());
+    res.status(result.status).send(result);
+  }
+);
+
+/**
+ *  the myads route. this will return our ads
+ */
+route.get(
+  "/myads",
+  authorized(true), //this bit will make this so only authorized people can access this
+  async (req: Request, res: Response) => {
+    let ad: any = {};
+    let result = await myAds(req.body.auth, await getDatabase());
+    res.status(result.status).send(result);
   }
 );
 

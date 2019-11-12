@@ -25,7 +25,7 @@ export default (onlyMe: boolean) => {
     //First, it lets us see if the user is actually authorized, that is if they are logged in.
     //Second, it fetches their user information so we can create a new field in the json body that has
     //all of their information so can use their UID to fetch applicable things from the database
-    let check = await new Promise((resolve, reject) => {
+    let check: any = await new Promise((resolve, reject) => {
       db.get("SELECT * FROM users WHERE TOKEN = ?", [token], (err, rows) => {
         if (err) reject(err);
         resolve(rows);
@@ -51,6 +51,20 @@ export default (onlyMe: boolean) => {
     }
     req.body["auth"]["token"] = token;
     req.body["auth"]["user"] = check;
+    //we'll also go to the profile table and grab their email
+    let email = await new Promise((resolve, reject) => {
+      db.get(
+        "SELECT email FROM profile WHERE uid = ?",
+        [check.uid],
+        (err, rows) => {
+          if (err) reject(err);
+          resolve(rows);
+        }
+      );
+    }).catch(err => {
+      next(err);
+    });
+    req.body["auth"]["user"]["email"] = email.email;
     //this next is an express method that basically says "ok i'm done, pass the req, res and next options to the next route". In this case
     //it is the actual body of the route that uses this (ie: "/getmyprofile", authorized(true), -- (req, res) => -- ) the -- bit
     next();

@@ -237,9 +237,10 @@ let createAd = async (
   ad: any,
   db: Database
 ): Promise<ServerResp> => {
+  console.log(auth);
   let update = await new Promise((resolve, reject): any => {
     db.get(
-      "insert into ads values(null, ?, ?, ?, ?, ?, ?, ?, null)",
+      "insert into ads values(null, ?, ?, ?, ?, ?, ?, ?)",
       [
         auth.user.username,
         ad.category,
@@ -263,7 +264,6 @@ let createAd = async (
       dataType: "error"
     };
   });
-  console.log(update);
   return {
     status: 200,
     message: "successfully created ad",
@@ -271,4 +271,45 @@ let createAd = async (
   };
 };
 
-export { createUser, loginUser, getMyProfile, updateMyProfile, createAd };
+/**
+ *  createAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param ad  - the ad object. contains the title, description, etc
+ * @param db  - database object
+ */
+let myAds = async (auth: any, db: Database): Promise<ServerResp> => {
+  let ads = await new Promise((resolve, reject): any => {
+    db.all(
+      "select * from ads where poster = ?",
+      [auth.user.username],
+      (err: any, row: any) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
+  }).catch(err => {
+    console.error(err);
+    return {
+      status: 200,
+      message: "error",
+      data: err,
+      dataType: "error"
+    };
+  });
+  return {
+    status: 200,
+    data: ads,
+    dataType: "myads",
+    message: "got ads",
+    success: true
+  };
+};
+
+export {
+  createUser,
+  loginUser,
+  getMyProfile,
+  updateMyProfile,
+  createAd,
+  myAds
+};
