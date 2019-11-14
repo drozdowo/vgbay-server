@@ -1,4 +1,5 @@
 import { Database } from "sqlite3";
+import { myAds } from "./user/user";
 
 let database: Database;
 
@@ -35,6 +36,47 @@ let initTables = async (db: Database): Promise<void> => {
       }
     }
   );
+
+  //Create Categories Table
+  await db.run(
+    `CREATE TABLE categories (
+      id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+      category	TEXT NOT NULL
+    )`,
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
+
+  //Populate Categories Data
+  let categories: Array<string> = [
+    "Games (Boxed)",
+    "Accounts",
+    "Consoles (Modern)",
+    "Consoles (Retro)",
+    "Games (Retro)",
+    "Games (Bulk)",
+    "Memorabilia",
+    "Accessories",
+    "Cables",
+    "Test"
+  ];
+  categories.map(async (category: string) => {
+    await db.run(
+      `
+        INSERT INTO CATEGORIES VALUES ('${categories
+          .indexOf(category)
+          .valueOf() + 1}', '${category}')
+      `,
+      err => {
+        if (err != null) {
+          //console.log("category err" + err);
+        }
+      }
+    );
+  });
 };
 
 export { initTables, getDatabase };

@@ -43,4 +43,22 @@ let searchName = async (
   };
 };
 
-export { homepageAds, searchName };
+let getCategories = async (db: Database): Promise<ServerResp> => {
+  let categories = await new Promise((resolve, reject) => {
+    db.all("select * from categories", (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+  return {
+    status: 200,
+    message: "success",
+    success: true,
+    data: categories,
+    dataType: "categories"
+  };
+};
+
+export { homepageAds, searchName, getCategories };
