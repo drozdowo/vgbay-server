@@ -9,7 +9,8 @@ import {
   getMyProfile,
   updateMyProfile,
   createAd,
-  myAds
+  myAds,
+  getAd
 } from "../db/user/user";
 import { getDatabase } from "../db/databaseinit";
 import authorized from "../middleware/authorized";
@@ -91,6 +92,22 @@ route.get(
   async (req: Request, res: Response) => {
     let ad: any = {};
     let result = await myAds(req.body.auth, await getDatabase());
+    res.status(result.status).send(result);
+  }
+);
+
+/**
+ *  the getad route. this will return the requested ad
+ */
+route.get(
+  "/adview/:adId",
+  authorized(false),
+  async (req: Request, res: Response, next: NextFunction) => {
+    let result = await getAd(
+      req.body.auth,
+      req.params.adId,
+      await getDatabase()
+    );
     res.status(result.status).send(result);
   }
 );

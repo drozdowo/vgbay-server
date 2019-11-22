@@ -3,4 +3,6 @@ interface ServerResp {
     message: string;
     token?: string;
     success: boolean;
+    data?: any;
+    dataType?: string;
 }

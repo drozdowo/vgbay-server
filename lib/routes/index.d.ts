@@ -4,4 +4,5 @@
  *  we just grab what we need from ./routes)
  */
 import User from "./user";
-export { User };
+import Search from "./search";
+export { User, Search };

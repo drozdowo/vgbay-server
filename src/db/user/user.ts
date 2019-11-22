@@ -240,16 +240,8 @@ let createAd = async (
   console.log(auth);
   let update = await new Promise((resolve, reject): any => {
     db.get(
-      "insert into ads values(null, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        auth.user.username,
-        ad.category,
-        ad.name,
-        ad.description,
-        ad.price,
-        auth.user.email,
-        new Date().getDate()
-      ],
+      "insert into ads values(null, ?, ?, ?, ?, ?, (DATETIME('now', 'localtime')))",
+      [auth.user.uid, ad.category, ad.name, ad.description, ad.price],
       (err: any, row: any) => {
         if (err) reject(err);
         resolve(row);
@@ -264,6 +256,7 @@ let createAd = async (
       dataType: "error"
     };
   });
+  console.log(update);
   return {
     status: 200,
     message: "successfully created ad",
@@ -280,8 +273,8 @@ let createAd = async (
 let myAds = async (auth: any, db: Database): Promise<ServerResp> => {
   let ads = await new Promise((resolve, reject): any => {
     db.all(
-      "select * from ads where poster = ?",
-      [auth.user.username],
+      "select * from ads where uid = ?",
+      [auth.user.uid],
       (err: any, row: any) => {
         if (err) reject(err);
         resolve(row);
@@ -305,11 +298,66 @@ let myAds = async (auth: any, db: Database): Promise<ServerResp> => {
   };
 };
 
+/**
+ *  getAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param adId - the ad id number
+ * @param db  - database object
+ */
+let getAd = async (
+  auth: any,
+  adId: string,
+  db: Database
+): Promise<ServerResp> => {
+  //Log that somebody viewed this ad
+  await new Promise((resolve, reject): any => {
+    db.run(
+      "INSERT INTO viewlog values (NULL, ?, ?, (DATETIME('now', 'localtime')))",
+      [auth.user.uid, adId],
+      (err: any, row: any) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
+  }).catch(err => {
+    console.error(err);
+    return {
+      status: 200,
+      message: "error",
+      data: err,
+      dataType: "error"
+    };
+  });
+
+  let ad = await new Promise((resolve, reject): any => {
+    db.all("select * from ads where id = ?", [adId], (err: any, row: any) => {
+      if (err) reject(err);
+      resolve(row);
+    });
+  }).catch(err => {
+    console.error(err);
+    return {
+      status: 200,
+      message: "error",
+      data: err,
+      dataType: "error"
+    };
+  });
+  return {
+    status: 200,
+    data: ad,
+    dataType: "adinfo",
+    message: "got ad",
+    success: true
+  };
+};
+
 export {
   createUser,
   loginUser,
   getMyProfile,
   updateMyProfile,
   createAd,
-  myAds
+  myAds,
+  getAd
 };

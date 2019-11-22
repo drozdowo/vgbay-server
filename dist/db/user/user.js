@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loginUser = exports.createUser = void 0;
+exports.getAd = exports.myAds = exports.createAd = exports.updateMyProfile = exports.getMyProfile = exports.loginUser = exports.createUser = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -117,6 +117,14 @@ function () {
     return _ref.apply(this, arguments);
   };
 }();
+/** loginUser
+ *  Called when a user is logging into the
+ *
+ * @param username string
+ * @param password  string
+ * @param db database
+ */
+
 
 exports.createUser = createUser;
 
@@ -238,5 +246,306 @@ function () {
     return _ref2.apply(this, arguments);
   };
 }();
+/**
+ * getMyProfile
+ * Gets the users profile information for display. No editing here.
+ * @param token string - the users token
+ * @param db database - the database object
+ */
+
 
 exports.loginUser = loginUser;
+
+var getMyProfile =
+/*#__PURE__*/
+function () {
+  var _ref3 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee3(token, db) {
+    var check;
+    return _regenerator["default"].wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return new Promise(function (resolve, reject) {
+              db.get("select * from profile where uid = (select uid from users where token = ?)", [token], function (err, row) {
+                if (err) reject(err);
+                resolve(row);
+              });
+            })["catch"](function (err) {
+              console.log(err);
+            });
+
+          case 2:
+            check = _context3.sent;
+
+            if (check) {
+              _context3.next = 5;
+              break;
+            }
+
+            return _context3.abrupt("return", {
+              status: 200,
+              success: false,
+              message: "invalid user?"
+            });
+
+          case 5:
+            return _context3.abrupt("return", {
+              status: 200,
+              message: "success",
+              dataType: "profile",
+              data: check,
+              success: true
+            });
+
+          case 6:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+
+  return function getMyProfile(_x7, _x8) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+/**
+ * updateMyProfile
+ * Updates the users profile based on the authorization value
+ * @param info json - the json of the user
+ * @param db database - the database object
+ */
+
+
+exports.getMyProfile = getMyProfile;
+
+var updateMyProfile =
+/*#__PURE__*/
+function () {
+  var _ref4 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee4(info, db) {
+    var update;
+    return _regenerator["default"].wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return new Promise(function (resolve, reject) {
+              db.get("update profile set email = ?, city = ?, postalcode = ?, phone = ?, address = ? where uid = ?", [info.email ? info.email : null, info.city ? info.city : null, info.postalcode ? info.postalcode : null, info.phone ? info.phone : null, info.address ? info.address : null, info.auth.user.uid], function (err, row) {
+                if (err) reject(err);
+                resolve(row);
+              });
+            })["catch"](function (err) {
+              console.error(err);
+              return {
+                status: 200,
+                message: "error",
+                data: err,
+                dataType: "error"
+              };
+            });
+
+          case 2:
+            update = _context4.sent;
+            return _context4.abrupt("return", {
+              status: 200,
+              message: "successfully updated profile",
+              dataType: "profileupdated",
+              success: true
+            });
+
+          case 4:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function updateMyProfile(_x9, _x10) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+/**
+ *  createAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param ad  - the ad object. contains the title, description, etc
+ * @param db  - database object
+ */
+
+
+exports.updateMyProfile = updateMyProfile;
+
+var createAd =
+/*#__PURE__*/
+function () {
+  var _ref5 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee5(auth, ad, db) {
+    var update;
+    return _regenerator["default"].wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            console.log(auth);
+            _context5.next = 3;
+            return new Promise(function (resolve, reject) {
+              db.get("insert into ads values(null, ?, ?, ?, ?, ?, (DATETIME('now', 'localtime')))", [auth.user.uid, ad.category, ad.name, ad.description, ad.price], function (err, row) {
+                if (err) reject(err);
+                resolve(row);
+              });
+            })["catch"](function (err) {
+              console.error(err);
+              return {
+                status: 200,
+                message: "error",
+                data: err,
+                dataType: "error"
+              };
+            });
+
+          case 3:
+            update = _context5.sent;
+            console.log(update);
+            return _context5.abrupt("return", {
+              status: 200,
+              message: "successfully created ad",
+              success: true
+            });
+
+          case 6:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
+
+  return function createAd(_x11, _x12, _x13) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+/**
+ *  createAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param ad  - the ad object. contains the title, description, etc
+ * @param db  - database object
+ */
+
+
+exports.createAd = createAd;
+
+var myAds =
+/*#__PURE__*/
+function () {
+  var _ref6 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee6(auth, db) {
+    var ads;
+    return _regenerator["default"].wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return new Promise(function (resolve, reject) {
+              db.all("select * from ads where uid = ?", [auth.user.uid], function (err, row) {
+                if (err) reject(err);
+                resolve(row);
+              });
+            })["catch"](function (err) {
+              console.error(err);
+              return {
+                status: 200,
+                message: "error",
+                data: err,
+                dataType: "error"
+              };
+            });
+
+          case 2:
+            ads = _context6.sent;
+            return _context6.abrupt("return", {
+              status: 200,
+              data: ads,
+              dataType: "myads",
+              message: "got ads",
+              success: true
+            });
+
+          case 4:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+
+  return function myAds(_x14, _x15) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+/**
+ *  getAd
+ * @param auth  - the auth object containing their token, uid and so on
+ * @param adId - the ad id number
+ * @param db  - database object
+ */
+
+
+exports.myAds = myAds;
+
+var getAd =
+/*#__PURE__*/
+function () {
+  var _ref7 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee7(adId, db) {
+    var ad;
+    return _regenerator["default"].wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return new Promise(function (resolve, reject) {
+              db.all("select * from ads where id = ?", [adId], function (err, row) {
+                if (err) reject(err);
+                resolve(row);
+              });
+            })["catch"](function (err) {
+              console.error(err);
+              return {
+                status: 200,
+                message: "error",
+                data: err,
+                dataType: "error"
+              };
+            });
+
+          case 2:
+            ad = _context7.sent;
+            return _context7.abrupt("return", {
+              status: 200,
+              data: ad,
+              dataType: "adinfo",
+              message: "got ad",
+              success: true
+            });
+
+          case 4:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+
+  return function getAd(_x16, _x17) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+
+exports.getAd = getAd;

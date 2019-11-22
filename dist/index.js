@@ -30,6 +30,8 @@ var sqlite3 = require("sqlite3").verbose();
 var db;
 app.use("/user", _routes.User); //Forward all things that access /user/<anything> to our User route
 
+app.use("/search", _routes.Search); //Forward all things that access /user/<anything> to our User route
+
 app.listen(3000,
 /*#__PURE__*/
 (0, _asyncToGenerator2["default"])(
@@ -39,7 +41,7 @@ _regenerator["default"].mark(function _callee() {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          db = new sqlite3.Database("../vgbayserver.db", function (err) {
+          db = new sqlite3.Database("vgbayserver.db", function (err) {
             if (err) {
               console.log("err");
               process.exit(1);

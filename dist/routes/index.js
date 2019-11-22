@@ -11,5 +11,13 @@ Object.defineProperty(exports, "User", {
     return _user["default"];
   }
 });
+Object.defineProperty(exports, "Search", {
+  enumerable: true,
+  get: function get() {
+    return _search["default"];
+  }
+});
 
 var _user = _interopRequireDefault(require("./user"));
+
+var _search = _interopRequireDefault(require("./search"));

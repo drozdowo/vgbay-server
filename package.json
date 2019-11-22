@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "cross-env nodemon --watch . --exec babel-node ./src/index.ts --extensions \".ts\"",
+    "debug": "DEBUG=express:* cross-env nodemon --watch . --exec babel-node ./src/index.ts --extensions \".ts\"",
     "compile": "cross-env tsc --emitDeclarationOnly && babel src --out-dir dist --extensions \".ts\"",
     "test": "cross-env mocha src/test.js"
   },

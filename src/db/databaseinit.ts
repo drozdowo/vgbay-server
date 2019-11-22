@@ -20,7 +20,7 @@ let initTables = async (db: Database): Promise<void> => {
   );
 
   await db.run(
-    "CREATE TABLE ads (id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, poster	TEXT NOT NULL, category	TEXT NOT NULL, name	TEXT NOT NULL, description	TEXT NOT NULL, price	INTEGER NOT NULL, email	TEXT NOT NULL, datePosted	NUMERIC)",
+    "CREATE TABLE ads (id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, uid	number NOT NULL, category	TEXT NOT NULL, name	TEXT NOT NULL, description	TEXT NOT NULL, price	INTEGER NOT NULL, datePosted	NUMERIC)",
     err => {
       if (err != null) {
         //console.log(err);
@@ -77,6 +77,45 @@ let initTables = async (db: Database): Promise<void> => {
       }
     );
   });
+
+  //Create Admin Table
+  await db.run(
+    `CREATE TABLE "admin" (
+	"uid"	INTEGER NOT NULL UNIQUE,
+	"isadmin"	INTEGER NOT NULL,
+	PRIMARY KEY("uid","isadmin")
+  )`,
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
+  //insert admin acc as admin
+  await db.run(
+    `
+        INSERT INTO ADMIN VALUES (1, 'Y')
+      `,
+    err => {
+      if (err != null) {
+        // console.log("category err" + err);
+      }
+    }
+  );
+
+  await db.run(
+    `  CREATE TABLE "viewlog" (
+      "viewId"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+      "uid"	INTEGER NOT NULL,
+      "adId"	INTEGER NOT NULL,
+      "date"	TEXT NOT NULL
+    )`,
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
 };
 
 export { initTables, getDatabase };

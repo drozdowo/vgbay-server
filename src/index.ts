@@ -8,8 +8,20 @@ import bodyParser from "body-parser";
 import cors from "cors";
 
 let app = express();
-app.use(bodyParser.json()); //use body-parser module. It formats the post data into the body of the request.
+
+var corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200
+};
+app.options("*", cors(corsOptions));
 app.use(cors());
+app.use(bodyParser.json()); //use body-parser module. It formats the post data into the body of the request.
+app.use(
+  bodyParser.urlencoded({
+    // to support URL-encoded bodies
+    extended: true
+  })
+);
 
 let sqlite3 = require("sqlite3").verbose();
 let db: Database;
