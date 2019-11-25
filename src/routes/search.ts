@@ -1,5 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
-import { homepageAds, searchName, getCategories } from "../db/search/search";
+import {
+  homepageAds,
+  searchName,
+  getCategories,
+  getCities
+} from "../db/search/search";
 import { getDatabase } from "../db/databaseinit";
 import authorized from "../middleware/authorized";
 let route = express.Router();
@@ -15,8 +20,19 @@ route.post("/searchterm", async (req: Request, res: Response) => {
 });
 
 route.get("/categories", async (req: Request, res: Response) => {
-  let ads = await getCategories(await getDatabase());
-  res.status(ads.status).send(ads);
+  let categories = await getCategories(await getDatabase());
+  res.status(categories.status).send(categories);
 });
+
+/**
+ *  gets cities
+ */
+route.get(
+  "/getcities",
+  async (req: Request, res: Response, next: NextFunction) => {
+    let cities = await getCities(await getDatabase());
+    res.status(cities.status).send(cities);
+  }
+);
 
 export default route;

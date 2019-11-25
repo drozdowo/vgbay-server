@@ -61,4 +61,22 @@ let getCategories = async (db: Database): Promise<ServerResp> => {
   };
 };
 
-export { homepageAds, searchName, getCategories };
+let getCities = async (db: Database): Promise<ServerResp> => {
+  let cities = await new Promise((resolve, reject) => {
+    db.all("select * from city", (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+  return {
+    status: 200,
+    message: "success",
+    success: true,
+    data: cities,
+    dataType: "cities"
+  };
+};
+
+export { homepageAds, searchName, getCategories, getCities };

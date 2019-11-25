@@ -160,7 +160,14 @@ let loginUser = async (
 let getMyProfile = async (token: string, db: Database): Promise<ServerResp> => {
   let check: any = await new Promise((resolve, reject): any => {
     db.get(
-      "select * from profile where uid = (select uid from users where token = ?)",
+      `select   a.email,
+                b.city_name,
+                a.postalcode,
+                a.phone, 
+                a.address 
+      from profile a, city b 
+      where uid = (select uid from users where token = ?)
+      and a.city = b.city_id`,
       [token],
       (err, row) => {
         if (err) reject(err);
@@ -195,8 +202,23 @@ let getMyProfile = async (token: string, db: Database): Promise<ServerResp> => {
 let updateMyProfile = async (info: any, db: Database): Promise<ServerResp> => {
   let update = await new Promise((resolve, reject): any => {
     db.get(
-      "update profile set email = ?, city = ?, postalcode = ?, phone = ?, address = ? where uid = ?",
+      `INSERT INTO profile VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(uid) DO
+       UPDATE 
+       SET  email = ?,
+            city = ?,
+            postalcode = ?,
+            phone = ?,
+            address = ?
+      WHERE uid = ?
+      `,
       [
+        info.auth.user.uid,
+        info.email ? info.email : null,
+        info.city ? info.city : null,
+        info.postalcode ? info.postalcode : null,
+        info.phone ? info.phone : null,
+        info.address ? info.address : null,
         info.email ? info.email : null,
         info.city ? info.city : null,
         info.postalcode ? info.postalcode : null,

@@ -95,7 +95,6 @@ route.get(
     res.status(result.status).send(result);
   }
 );
-
 /**
  *  the getad route. this will return the requested ad
  */

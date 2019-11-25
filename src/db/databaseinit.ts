@@ -116,6 +116,48 @@ let initTables = async (db: Database): Promise<void> => {
       }
     }
   );
+
+  await db.run(
+    `  
+    CREATE TABLE "city" (
+      "city_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+      "city_name"	INTEGER NOT NULL UNIQUE
+    );`,
+    err => {
+      if (err != null) {
+        //console.log(err);
+      }
+    }
+  );
+
+  //Populate Categories Data
+  let cities: Array<string> = [
+    "Windsor",
+    "Leamington",
+    "Detroit",
+    "Toronto",
+    "London",
+    "Sudbury",
+    "Sarnia",
+    "Essex County",
+    "Ann Arbor",
+    "Grand Rapids",
+    "Dearborn",
+    "Hamtramck"
+  ];
+  cities.map(async (city: string) => {
+    await db.run(
+      `
+        INSERT INTO CITY VALUES ('${cities.indexOf(city).valueOf() +
+          1}', '${city}')
+      `,
+      err => {
+        if (err != null) {
+          //console.log("city err" + err);
+        }
+      }
+    );
+  });
 };
 
 export { initTables, getDatabase };
