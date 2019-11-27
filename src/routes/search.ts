@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import {
   homepageAds,
-  searchName,
+  searchAds,
   getCategories,
   getCities
 } from "../db/search/search";
@@ -15,7 +15,7 @@ route.get("/homepageads", async (req: Request, res: Response) => {
 });
 
 route.post("/searchterm", async (req: Request, res: Response) => {
-  let ads = await searchName(await getDatabase(), req.body.term);
+  let ads = await searchAds(await getDatabase(), req.body);
   res.status(ads.status).send(ads);
 });
 

@@ -295,7 +295,7 @@ let createAd = async (
 let myAds = async (auth: any, db: Database): Promise<ServerResp> => {
   let ads = await new Promise((resolve, reject): any => {
     db.all(
-      "select * from ads where uid = ?",
+      "select a.uid, a.id, b.category, a.name, a.description, a.price, a.datePosted from ads a, categories b where a.uid = ? and b.id = a.category",
       [auth.user.uid],
       (err: any, row: any) => {
         if (err) reject(err);
@@ -352,10 +352,14 @@ let getAd = async (
   });
 
   let ad = await new Promise((resolve, reject): any => {
-    db.all("select * from ads where id = ?", [adId], (err: any, row: any) => {
-      if (err) reject(err);
-      resolve(row);
-    });
+    db.all(
+      "select a.uid, a.id, b.category, a.name, a.description, a.price, a.datePosted from ads a, categories b where a.id = ? and b.id = a.category",
+      [adId],
+      (err: any, row: any) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
   }).catch(err => {
     console.error(err);
     return {

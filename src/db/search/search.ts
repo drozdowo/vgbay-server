@@ -18,14 +18,16 @@ let homepageAds = async (db: Database): Promise<ServerResp> => {
   };
 };
 
-let searchName = async (
-  db: Database,
-  searchterm: string
-): Promise<ServerResp> => {
+let searchAds = async (db: Database, searchterm: any): Promise<ServerResp> => {
+  console.log(searchterm);
   let ads = await new Promise((resolve, reject) => {
     db.all(
-      'select * from ads where UPPER(name) like "%" || ? || "%"',
-      [searchterm.toUpperCase()],
+      'select a.uid, a.id, b.category, a.name, a.description, a.price, a.datePosted from ads a, categories b where b.id = a.category and UPPER(name) like "%" || ? || "%" and a.category like "%"|| ? ||"%" and (SELECT  c.city from profile c where c.uid = a.uid) LIKE "%"||?||"%"',
+      [
+        searchterm.term.toUpperCase(),
+        searchterm.category == null ? "" : searchterm.category,
+        searchterm.city == null ? "" : searchterm.city
+      ],
       (err, rows) => {
         if (err) reject(err);
         resolve(rows);
@@ -79,4 +81,4 @@ let getCities = async (db: Database): Promise<ServerResp> => {
   };
 };
 
-export { homepageAds, searchName, getCategories, getCities };
+export { homepageAds, searchAds, getCategories, getCities };
